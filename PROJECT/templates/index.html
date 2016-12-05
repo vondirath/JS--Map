@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content='width=device-width,initial-scale=1.0'>
+    <meta charset="UTF-8">
+
+    <!--Stylesheets-->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}" />
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}" />
+    <title>Neighborhood Map</title>
+
+</head>
+
+<body>
+<!--HTML-->
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+
+    <div id="search">
+        <input id="search-box" data-bind="textInput: searchTerm, valueUpdate: 'afterkeydown'" placeholder="Filter.." />
+    </div>
+
+    <div class="app">
+        <div class="list" id="list">
+            <ul class="results" id="results" data-bind="foreach: searchList">
+                <li class="place" id="place" data-bind="text: name, click: bounce"></li>
+            </ul>
+        </div><!--list-->
+    </div><!-- app -->
+</nav> <!--navbar-->
+
+<div class="map" id="map">Map</div>
+
+
+
+    <!--Google Maps-->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=&callback=appInit"
+        onerror="errorHandling()"></script>
+
+    <script src="{{url_for('static', filename='js/jquery.js')}}"></script>
+    <script src="{{url_for('static', filename='js/knockout.js')}}"></script>
+    <!--Javascript-->
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/main.js')}}"></script>
+
+</body>
+</html>
