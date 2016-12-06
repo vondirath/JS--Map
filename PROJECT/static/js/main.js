@@ -37,29 +37,18 @@ var Location = function (data) {
   this.name = data.name;
   this.lat = data.lat;
   this.lng = data.lng;
-  this.URL = '';
-  this.street = '';
-  this.city = '';
-  this.phone = '';
-
   this.visible = ko.observable(true);
 
   // API client info
-
-
-  // url builder for request to foursquare
-  var fourSquareUrl = 'https://api.foursquare.com/v2/venues/search?ll='
-    + this.lat + ',' + this.lng + '&client_id=' + client_id + '&client_secret='
-    + client_secret + '&v=20161204' + '&query=' + this.name;
+  var client_id = '1LIUIJ3USATCEIA4HNR1AHY1FWX0XZBCG1YXH4I0NJTGUX4N';
+  var client_secret = 'ILCJ4AKFWVWCDJNT0YZOT4FX0DPWXPVT4PQMTNUX0IAUDZLL';
 
   // start of ajax call for foursquare api
   $.ajax({
     type: "GET",
     url: "https://api.foursquare.com/v2/venues/search",
     dataType: "json",
-    data: 'll=' + this.lat + ',' + this.lng + '&client_id=' +
-    client_id + '&client_secret=' + client_secret + '&v=20161204' +
-    '&query=' + this.name,
+    data: 'll=' + this.lat + ',' + this.lng + '&client_id=' + client_id + '&client_secret=' + client_secret + '&v=20161204' + '&query=' + this.name,
 
     success: function (data) {
       // grabs first and stores in variable place
@@ -84,24 +73,16 @@ var Location = function (data) {
 
       // grabs city state zip
       self.city = place.location.formattedAddress[1];
-    }, // end success
+    }, // end ajax success
 
-    error: function(xhr, status, error) {
+    error: function (xhr, status, error) {
       // logs error to console 
       console.log(error);
-      
+
     } // end ajax error
-  }), // end ajax call
-  
+  }); // end ajax call
 
-  // format for infowindow
-  this.contentString = '<div><div><strong>' + data.name + self.error + "</strong></div>" +
-    '<div><a href="' + self.URL + '">' + self.URL + "</a></div>" +
-    '<div>' + self.street + "</div>" +
-    '<div>' + self.city + "</div>" +
-    '<div>' + self.phone + "</div></div>";
-
-  // creates infowindow
+  // creates a blank infowindow for each marker
   this.infoWindow = new google.maps.InfoWindow({ content: self.contentString });
 
   this.marker = new google.maps.Marker({
@@ -110,6 +91,7 @@ var Location = function (data) {
     title: data.name
   });
 
+  // markers not in search are not visible.
   this.addMarker = ko.computed(function () {
     if (this.visible() === true) {
       this.marker.setMap(map);
@@ -119,17 +101,11 @@ var Location = function (data) {
     return true;
   }, this);
 
+  // on click populates the window
   this.marker.addListener('click', function () {
-    self.contentString = '<div><div><strong>' + data.name + "</strong></div>" +
-      '<div><a href="' + self.URL + '">' + self.URL + "</a></div>" +
-      '<div>' + self.street + "</div>" +
-      '<div>' + self.city + "</div>" +
-      '<div><a href="tel:' + self.phone + '">' + self.phone + "</a></div></div>";
-
+    self.contentString = '<div><div><strong>' + data.name + "</strong></div>" + '<div><a href="' + self.URL + '">' + self.URL + "</a></div>" + '<div>' + self.street + "</div>" + '<div>' + self.city + "</div>" + '<div><a href="tel: ' + self.phone + '">' + self.phone + "</a></div></div>";
     self.infoWindow.setContent(self.contentString);
-
     self.infoWindow.open(map, this);
-
     self.marker.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(function () {
       self.marker.setAnimation(null);
@@ -140,14 +116,9 @@ var Location = function (data) {
   this.bounce = function (place) {
     google.maps.event.trigger(self.marker, 'click');
   };
-
-
-
 }; // End Var Location
 
 
-
-// App View
 function appView() {
   // define this as self.
   var self = this;
@@ -155,7 +126,7 @@ function appView() {
   // sets search params to empty so complete list displays
   this.searchTerm = ko.observable("");
 
-  //sets empty array
+  //sets empty array for all info
   this.locationList = ko.observableArray([]);
 
   //creates map
@@ -169,7 +140,7 @@ function appView() {
     self.locationList.push(new Location(location));
   });
 
-  // filters search list to lower case 
+  // filters search list to lower case sets location visible for marker
   this.searchList = ko.computed(function () {
     var filter = self.searchTerm().toLowerCase();
     if (!filter) {

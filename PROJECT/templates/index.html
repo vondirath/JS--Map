@@ -35,14 +35,18 @@
 
 
     <!--Google Maps-->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=&callback=appInit"
-        onerror="errorHandling()"></script>
+
+
 
     <script src="{{url_for('static', filename='js/jquery.js')}}"></script>
     <script src="{{url_for('static', filename='js/knockout.js')}}"></script>
+    <script src="{{url_for('static', filename='js/main.js')}}"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCC8YS2OaexNv0ib-5_hRE0Ilgb59rHme8&callback=appInit"
+        onerror="errorHandling()"></script>
+
     <!--Javascript-->
     <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
-    <script src="{{url_for('static', filename='js/main.js')}}"></script>
+
 
 </body>
 </html>
